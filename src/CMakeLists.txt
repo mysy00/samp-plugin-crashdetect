@@ -82,7 +82,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 endif()
 
 add_subdirectory(amx)
-target_link_Libraries(crashdetect amx configreader pcre subhook)
+target_link_libraries(crashdetect amx pcre subhook)
 
 if(WIN32)
   target_link_libraries(crashdetect DbgHelp)

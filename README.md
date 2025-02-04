@@ -17,7 +17,7 @@ Installation
    [Building from source code](#building-from-source-code)).
 2. Extract and copy `crashdetect.so` or `crashdetect.dll` to `<sever>/plugins/`.
 3. Add `crashdetect` (Windows) or `crashdetect.so` (Linux) to the `plugins`
-   line of your server.cfg.
+   line of your config.json.
 
 Binary packages come with an include file (`crashdetect.inc`) that contains
 some helper functions that you may find useful. But **you don't have to
@@ -45,7 +45,7 @@ CrashDetect on a production (live) server with many players.
 Configuration
 -------------
 
-CrashDetect reads settings from server.cfg, the server configuration file. This
+CrashDetect since the release of version 4.23 reads settings from config.json, the open.mp configuration file. This
 is done during plugin loading, so if you change any settings you will probably
 need to restart your server.
 
@@ -77,7 +77,7 @@ Available settings:
   * `trace_filter Player` - output functions whose name contains `Player`
   * `trace_filter playerid=0` - show functions whose `playerid` parameter is 0
 
-* `crashdetect_log <filename>`
+* `output <filename>`
 
   Use a custom log file for output.
 
@@ -121,7 +121,7 @@ provide a much nicer API.
 * `DisableCrashDetectLongCall()` - Disable the long call warning.
 * `EnableCrashDetectLongCall()` - Enable the long call warning.
 * `ResetCrashDetectLongCallTime()` - Reset the long call threshold to the
-   default (from `server.cfg`).
+   default (from `config.json`).
 * `RestartCrashDetectLongCall()` - Restart the long call timer.
 * `bool:IsCrashDetectLongCallEnabled()` - Is long function call detection
    enabled?
@@ -158,7 +158,7 @@ for general flags and `0xFE` for long call time values:
 The flags are:
 
 * `1` - CrashDetect is present (read only).
-* `2` - long_call_time checks enabled (write ignored when `server.cfg` has
+* `2` - long_call_time checks enabled (write ignored when `config.json` has
   `long_call_time 0`).
 * `4` - long_call_time reset to default time (write `1` only).
 * `8` - long_call_time restart check from now (write `1` only).

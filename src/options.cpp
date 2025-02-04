@@ -22,9 +22,12 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <configreader.h>
+#include <fstream>
+#include "nlohmann/json.hpp"
 #include "options.h"
 #include "regexp.h"
+
+using json = nlohmann::json;
 
 namespace {
 
@@ -49,20 +52,22 @@ Options::Options():
   trace_flags_(0),
   trace_filter_(nullptr)
 {
-  ConfigReader server_cfg("server.cfg");
+  std::ifstream file("config.json");
+  json config;
+  file >> config;
 
-  trace_flags_ = TraceFlagsFromString(server_cfg.GetValueWithDefault("trace"));
-  std::string trace_filter_pattern =
-    server_cfg.GetValueWithDefault("trace_filter");
+  auto crashdetect_config = config["crashdetect"];
+
+  trace_flags_ = TraceFlagsFromString(crashdetect_config.value("trace", ""));
+  std::string trace_filter_pattern = crashdetect_config.value("trace_filter", "");
   if (!trace_filter_pattern.empty()) {
     trace_filter_ = new RegExp(trace_filter_pattern);
   }
 
-  log_path_ = server_cfg.GetValueWithDefault("crashdetect_log");
-  log_time_format_ =
-    server_cfg.GetValueWithDefault("logtimeformat", "[%H:%M:%S]");
+  log_path_ = crashdetect_config.value("output", "");
+  log_time_format_ = crashdetect_config.value("logtimeformat", "[%H:%M:%S]");
 
-  long_call_time_ = server_cfg.GetValueWithDefault("long_call_time", 5000U);
+  long_call_time_ = crashdetect_config.value("long_call_time", 5000U);
 }
 
 Options::~Options() {
