@@ -67,7 +67,7 @@ Options::Options():
   log_path_ = crashdetect_config.value("output", "");
   log_time_format_ = crashdetect_config.value("logtimeformat", "[%H:%M:%S]");
 
-  long_call_time_ = crashdetect_config.value("long_call_time", 5000U);
+  long_call_time_ = crashdetect_config.value("long_call_time", 25000U);
 }
 
 Options::~Options() {
