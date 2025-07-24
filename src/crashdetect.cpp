@@ -635,11 +635,21 @@ void CrashDetect::CheckLongCallTime(void) {
   if (!long_call_time_running_) {
     return;
   }
-  if (long_call_time_next_ < std::chrono::high_resolution_clock::now()) {
+
+  auto now = std::chrono::high_resolution_clock::now();
+
+  if (long_call_time_next_ < now) {
+    auto diff = now - long_call_time_next_;
+    double overflow_ms = std::chrono::duration<double, std::milli>(diff).count();
+    double threshold_ms = std::chrono::duration<double, std::milli>(long_call_time_current_).count();
+    double total_execution_ms = threshold_ms + overflow_ms;
+    
+    LogDebugPrint("Long callback execution detected (hang or performance issue) (execution: %.2fms, threshold: %.2fms)", total_execution_ms, threshold_ms);
+
     // Disable repeat stack dumps by setting this WAY in the future.
     long_call_time_next_ =
         std::chrono::high_resolution_clock::time_point::max();
-    LogDebugPrint("Long callback execution detected (hang or performance issue)");
+
     PrintAMXBacktrace();
   }
 }
